@@ -5,6 +5,12 @@ WIDTH = 1920
 HEIGHT = 1080
 BACKGROUND = (55, 110, 100)
 
+# COLOURS
+white = (255, 255, 255)
+black = (0,0,0)
+green = (0, 255, 0)
+blue = (0, 0, 128)
+
 SQUARE_ROOT_OF_TWO = math.sqrt(2)
 
 class Sprite(pygame.sprite.Sprite):
@@ -167,9 +173,20 @@ def main():
         screen.fill(BACKGROUND)
         player.draw(screen)
         boxes.draw(screen)
+        draw_text(screen, 'Welcome to Abacwrsed: A 2D platforming game')
+
         pygame.display.flip()
 
         clock.tick(60)
+
+
+def draw_text(screen, text):
+    # https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
+    font = pygame.font.Font('../fonts/AGoblinAppears.ttf', 32)
+    text = font.render(text, True, black, white)
+    textRect = text.get_rect()
+    textRect.center = (WIDTH // 2, HEIGHT // 4)
+    screen.blit(text, textRect)
 
 
 if __name__ == "__main__":
