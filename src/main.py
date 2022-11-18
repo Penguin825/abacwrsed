@@ -25,6 +25,9 @@ class Sprite(pygame.sprite.Sprite):
     def update(self):
         pass
 
+    def event(self, **kwargs):
+        pass
+
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
@@ -67,7 +70,7 @@ class Player(Sprite):
         """
         hsp = 0
         vsp = 0
-        onground = self.check_collision(0, 1, boxes)
+        onground = self.check_collision(0, 1, grounds=boxes)
         # check keys
         keys = pygame.key.get_pressed()
 
@@ -117,6 +120,9 @@ class Player(Sprite):
     def check_collision(self, x, y, grounds):
         self.rect.move_ip([x, y])
         collide = pygame.sprite.spritecollideany(self, grounds)
+        if collide:
+            collide.event(player=self)
+
         self.rect.move_ip([-x, -y])
         return collide
 
@@ -141,6 +147,14 @@ class Barrier(Sprite):
     def __init__(self, startx, starty):
         super().__init__("Barrier.png", startx, starty)
 
+class SadBarrier(Barrier):
+    def event(self, player):
+        player.stand_image = pygame.image.load("p1_front_cry.png")
+
+class HappyBarrier(Barrier):
+    def event(self, player):
+        player.stand_image = pygame.image.load("p1_front.png")
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -161,9 +175,11 @@ def main():
             boxes.add(Wall_H_JD(bx * 490, 100))                 #Wall horizontal top junctions
         for i in range(3):
             boxes.add(Wall_H(((i - 1) * 70) + (bx * 490), 660)) #Wall horizontal middle chunks
-        for i in range(4):
+        for i in range(3):
             boxes.add(Barrier((i * 70) + 630, 660))             #Barrier blocking access to one room
 
+        boxes.add(SadBarrier((3 * 70) + 630, 800))
+        boxes.add(HappyBarrier((6 * 70) + 630, 800))
 
     while True:
         pygame.event.pump()
